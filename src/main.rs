@@ -1,3 +1,4 @@
+use bunt;
 use clap::Parser;
 use std::str;
 
@@ -11,7 +12,13 @@ struct Cli {
     key: String,
 
     ///Encrypt or Decrypt
-    #[arg(short, long, value_name = "Key", default_value_t = false)]
+    #[arg(
+        short,
+        long,
+        value_name = "Key",
+        value_name = "decryption",
+        default_value_t = false
+    )]
     d: bool,
 }
 
@@ -96,17 +103,26 @@ fn main() {
     let messege = &args.messege;
     if args.d {
         let decrypted_message = decrypt(key, messege.as_bytes().to_vec());
-        println!(
-            "{:?}",
-            str::from_utf8(&decrypted_message).unwrap().replace("\0", " ")
+        bunt::println!(
+            "{$bold+green}Result:{/$} before encryption <{[red]}>",
+            str::from_utf8(&decrypted_message)
+                .unwrap()
+                .replace("\0", " ")
         );
     } else {
         let encrypted_message = encrypt(key, messege);
-        println!("{:?}", str::from_utf8(&encrypted_message).unwrap().replace("\0", " "));
+        bunt::println!(
+            "{$bold+green}Result:{/$} after encryption <{[red]}>",
+            str::from_utf8(&encrypted_message)
+                .unwrap()
+                .replace("\0", " ")
+        );
         let decrypted_message = decrypt(key, encrypted_message);
-        println!(
-            "{:?}",
-            str::from_utf8(&decrypted_message).unwrap().replace("\0", " ")
+        bunt::println!(
+            "{$bold+green}Result:{/$} decrypted <{[blue]}>",
+            str::from_utf8(&decrypted_message)
+                .unwrap()
+                .replace("\0", " ")
         );
     }
 }
