@@ -1,4 +1,19 @@
+use clap::Parser;
 use std::str;
+
+#[derive(Parser)]
+struct Cli {
+    /// Messege to encrypt
+    #[arg(short, long, value_name = "messege to encrypt")]
+    messege: String,
+    /// Key for encryption
+    #[arg(short, long, value_name = "Key")]
+    key: String,
+
+    ///Encrypt or Decrypt
+    #[arg(short, long, value_name = "Key", default_value_t = false)]
+    d: bool,
+}
 
 fn gen_key(keyword: &str) -> Vec<u8> {
     let mut keyword: Vec<u8> = keyword.as_bytes().to_vec();
@@ -76,10 +91,22 @@ fn decrypt(keyword: &str, ciphertext: Vec<u8>) -> Vec<u8> {
 }
 
 fn main() {
-    let key = "fjkgjejrig";
-    let messege = "HELLO WORLD";
-    let encrypted_message = encrypt(key, messege);
-    println!("{:?}", str::from_utf8(&encrypted_message).unwrap());
-    let decrypted_message = decrypt(key, encrypted_message);
-    println!("{:?}", str::from_utf8(&decrypted_message).unwrap());
+    let args = Cli::parse();
+    let key = &args.key;
+    let messege = &args.messege;
+    if args.d {
+        let decrypted_message = decrypt(key, messege.as_bytes().to_vec());
+        println!(
+            "{:?}",
+            str::from_utf8(&decrypted_message).unwrap().replace("\0", " ")
+        );
+    } else {
+        let encrypted_message = encrypt(key, messege);
+        println!("{:?}", str::from_utf8(&encrypted_message).unwrap().replace("\0", " "));
+        let decrypted_message = decrypt(key, encrypted_message);
+        println!(
+            "{:?}",
+            str::from_utf8(&decrypted_message).unwrap().replace("\0", " ")
+        );
+    }
 }
