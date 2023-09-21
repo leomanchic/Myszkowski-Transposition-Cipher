@@ -31,7 +31,7 @@ fn gen_key(keyword: &str) -> Vec<u8> {
     new_key
 }
 
-fn create_gid(keyword: &str, messege: &str) -> Vec<Vec<u8>> {
+fn create_grid(keyword: &str, messege: &str) -> Vec<Vec<u8>> {
     let key = gen_key(keyword);
     let num_columns = key.len();
     let num_rows = (messege.len() + &num_columns - 1) / num_columns;
@@ -50,7 +50,7 @@ fn create_gid(keyword: &str, messege: &str) -> Vec<Vec<u8>> {
 
 fn encrypt(keyword: &str, messege: &str) -> Vec<u8> {
     let key = gen_key(keyword);
-    let grid = create_gid(keyword, messege);
+    let grid = create_grid(keyword, messege);
     let mut ciphertext: Vec<u8> = vec![];
     for ch in &key {
         let col = key.iter().position(|&r| r == ch.clone()).unwrap();
